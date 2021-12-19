@@ -14,13 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const ImageService_1 = __importDefault(require("../service/ImageService"));
 const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 describe('Test serving resized and full images', () => {
     let service;
     beforeAll(() => {
         service = new ImageService_1.default();
     });
     it('Should return correct filepath for full image size', () => __awaiter(void 0, void 0, void 0, function* () {
-        const expected = '/home/workspace/images/full/fjord.jpg';
+        const expected = path_1.default.resolve('images/full', 'fjord.jpg');
         const queryParams = {};
         const w = queryParams.width;
         const h = queryParams.height;
@@ -28,7 +29,7 @@ describe('Test serving resized and full images', () => {
         expect(imgPath).toEqual(expected);
     }));
     it('Should return filepath for a new resized image', () => __awaiter(void 0, void 0, void 0, function* () {
-        const expected = '/home/workspace/images/resized/fjord_700_350.jpg';
+        const expected = path_1.default.resolve('images/resized', 'fjord_700_350.jpg');
         expect(fs_1.default.existsSync(expected)).toBeFalsy();
         const queryParams = { width: '700', height: '350' };
         const w = queryParams.width;
@@ -38,7 +39,8 @@ describe('Test serving resized and full images', () => {
         fs_1.default.unlinkSync(expected);
     }));
     it('Should return filepath for a cached resized image', () => __awaiter(void 0, void 0, void 0, function* () {
-        const expected = '/home/workspace/images/resized/fjord_500_300.jpg';
+        const expected = path_1.default.resolve('images/resized', 'fjord_500_300.jpg');
+        ;
         expect(fs_1.default.existsSync(expected)).toBe(true);
         const queryParams = { width: '500', height: '300' };
         const w = queryParams.width;

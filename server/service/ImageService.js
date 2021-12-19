@@ -13,24 +13,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sharp_1 = require("../utils/sharp");
+const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 class ImageService {
     constructor() {
-        this.full_image_path = '/home/workspace/images/full/';
-        this.resized_image_path = '/home/workspace/images/resized/';
+        this.full_image_path = path_1.default.resolve('images/full');
+        this.resized_image_path = path_1.default.resolve('images/resized');
     }
     display(image_name, width, height) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Check if requested image exists
-                if (fs_1.default.existsSync(this.full_image_path + image_name + '.jpg')) {
+                if (fs_1.default.existsSync(path_1.default.join(this.full_image_path, image_name + '.jpg'))) {
                     // if there are no dimensions specified return the original
                     if (!width && !height)
-                        return this.full_image_path + image_name + '.jpg';
+                        return path_1.default.join(this.full_image_path, image_name + '.jpg');
                     // check if there is already a resized image of that size and return it
                     const cached = yield this.isCached(image_name, width, height);
                     if (cached) {
-                        return this.resized_image_path + image_name + '_' + width + '_' + height + '.jpg';
+                        return path_1.default.join(this.resized_image_path, image_name + '_' + width + '_' + height + '.jpg');
                     }
                     else {
                         return (0, sharp_1.resize)(image_name, width, height);
@@ -47,7 +48,7 @@ class ImageService {
     }
     isCached(name, width, height) {
         return __awaiter(this, void 0, void 0, function* () {
-            return fs_1.default.existsSync(this.resized_image_path + name + '_' + width + '_' + height + '.jpg');
+            return fs_1.default.existsSync(path_1.default.join(this.resized_image_path, name + '_' + width + '_' + height + '.jpg'));
         });
     }
 }

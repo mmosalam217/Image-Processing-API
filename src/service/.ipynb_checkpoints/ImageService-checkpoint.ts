@@ -1,21 +1,22 @@
 import { resize } from '../utils/sharp';
+import path from 'path';
 import fs from 'fs';
 
 export default class ImageService{
-    full_image_path: string = '/home/workspace/images/full/';
-    resized_image_path: string = '/home/workspace/images/resized/';
+    full_image_path: string = path.resolve('images/full');
+    resized_image_path: string = path.resolve('images/resized');
     
     async display(image_name: string, width: number, height: number) : Promise<string> {
-       
+
         try{
             // Check if requested image exists
-            if(fs.existsSync(this.full_image_path + image_name + '.jpg')){
+            if(fs.existsSync(path.join(this.full_image_path, image_name + '.jpg'))){
                 // if there are no dimensions specified return the original
-                if(!width && !height) return this.full_image_path + image_name + '.jpg';
+                if(!width && !height) return path.join(this.full_image_path, image_name + '.jpg');
                 // check if there is already a resized image of that size and return it
                 const cached = await this.isCached(image_name, width, height);
                 if(cached){
-                    return this.resized_image_path + image_name +'_'+ width + '_' + height + '.jpg';
+                    return path.join(this.resized_image_path, image_name +'_'+ width + '_' + height + '.jpg');
                 }else{
                     return resize(image_name, width, height);
                 }
@@ -28,6 +29,6 @@ export default class ImageService{
     }
     
    async isCached(name: string, width: number, height: number): Promise<boolean>{
-        return fs.existsSync(this.resized_image_path + name +'_'+ width + '_' + height + '.jpg');
+        return fs.existsSync(path.join(this.resized_image_path, name +'_'+ width + '_' + height + '.jpg'));
     }
 }
