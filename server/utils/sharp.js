@@ -14,16 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resize = void 0;
 const sharp_1 = __importDefault(require("sharp"));
+const path_1 = __importDefault(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
 function resize(filename, width, height) {
     return __awaiter(this, void 0, void 0, function* () {
         // Define input and output directories..
-        const path = `/home/workspace/images/full/${filename}.jpg`;
-        let outputDir = '/home/workspace/images/resized/';
+        const filepath = path_1.default.join(__dirname, '../../images/full', filename + '.jpg');
+        let outputDir = path_1.default.join(__dirname, '../../images/resized/');
         try {
             // Return a buffer to access width and height customized by sharp in case one of the 2 props is not proivded..
             // This helps when storing the image with its name and size into the filesystem for later cashing...
-            const { info, data } = yield (0, sharp_1.default)(path).resize({ width, height }).toBuffer({ resolveWithObject: true });
+            const { info, data } = yield (0, sharp_1.default)(filepath).resize({ width, height }).toBuffer({ resolveWithObject: true });
             const resized_filename = outputDir + filename + '_' + info.width + '_' + info.height + '.jpg';
             // Write new file for resized image from the buffer provided by sharp..
             const resized_image = yield promises_1.default.writeFile(resized_filename, Buffer.from(data.buffer));

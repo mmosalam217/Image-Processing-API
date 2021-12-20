@@ -3,11 +3,10 @@ import path from 'path';
 import fs from 'fs';
 
 export default class ImageService{
-    full_image_path: string = path.resolve('images/full');
-    resized_image_path: string = path.resolve('images/resized');
+    full_image_path: string = path.join(__dirname, '../../images/full');
+    resized_image_path: string = path.join(__dirname, '../../images/resized');
     
     async display(image_name: string, width: number, height: number) : Promise<string> {
-
         try{
             // Check if requested image exists
             if(fs.existsSync(path.join(this.full_image_path, image_name + '.jpg'))){

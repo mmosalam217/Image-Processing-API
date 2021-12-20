@@ -17,8 +17,8 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 class ImageService {
     constructor() {
-        this.full_image_path = path_1.default.resolve('images/full');
-        this.resized_image_path = path_1.default.resolve('images/resized');
+        this.full_image_path = path_1.default.join(__dirname, '../../images/full');
+        this.resized_image_path = path_1.default.join(__dirname, '../../images/resized');
     }
     display(image_name, width, height) {
         return __awaiter(this, void 0, void 0, function* () {
