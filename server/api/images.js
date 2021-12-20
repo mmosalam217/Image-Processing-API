@@ -15,20 +15,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ImageService_1 = __importDefault(require("../service/ImageService"));
 const imageService = new ImageService_1.default();
 const serveImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Extract dimensions from query if exist
+    const w = req.query.width;
+    const h = req.query.height;
+    // Neglect if just one size property is defined..
+    if ((w && !h) || (!w && h)) {
+        return res.status(400).json({ error: 'Please provide a comination of width and height' });
+    }
+    if (w && h && (parseInt(w) < 1 || parseInt(h) < 1)) {
+        return res.status(400).json({ error: 'Width and height must be bigger than 0' });
+    }
     try {
-        // Extract dimensions from query if exist
-        const w = req.query.width;
-        const h = req.query.height;
-        // Neglect if just one size property is defined..
-        if ((w && !h) || (!w && h)) {
-            return res.status(403).json({ error: 'Please provide a comination of width and height' });
-        }
         const img_url = yield imageService.display(req.params.image, parseInt(w), parseInt(h));
-        return res.sendFile(img_url);
+        return res.status(200).sendFile(img_url);
     }
     catch (err) {
-        console.log(err);
-        return res.json({ error: err });
+        let msg = err.message;
+        let errCode = msg === 'No Such File Exists' ? 404 : 400;
+        return res.status(errCode).json({ error: msg });
     }
 });
 const image_resizing_route = (app) => __awaiter(void 0, void 0, void 0, function* () {
